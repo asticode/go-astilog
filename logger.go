@@ -1,11 +1,6 @@
 package astilog
 
-import (
-	"log/syslog"
-	"os"
-
-	"github.com/rs/xlog"
-)
+import "github.com/rs/xlog"
 
 // NewConfig creates a new xlog.Config
 func NewConfig(c Configuration) (o xlog.Config) {
@@ -15,7 +10,7 @@ func NewConfig(c Configuration) (o xlog.Config) {
 			"app_name": c.AppName,
 		},
 		Level:  xlog.LevelInfo,
-		Output: xlog.NewConsoleOutputW(os.Stderr, xlog.NewSyslogOutputFacility("", "", c.AppName, syslog.LOG_LOCAL0)),
+		Output: DefaultOutput(c),
 	}
 
 	// Verbose
