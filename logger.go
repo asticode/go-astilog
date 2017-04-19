@@ -21,6 +21,11 @@ type Logger interface {
 	Fatalf(format string, v ...interface{})
 }
 
+// LoggerSetter represents a logger setter
+type LoggerSetter interface {
+	SetLogger(l Logger)
+}
+
 // NewXlogConfig creates a new xlog.Config
 func NewXlogConfig(c Configuration) (o xlog.Config) {
 	// Init
