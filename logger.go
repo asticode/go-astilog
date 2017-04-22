@@ -2,8 +2,27 @@ package astilog
 
 import "github.com/rs/xlog"
 
-// NewConfig creates a new xlog.Config
-func NewConfig(c Configuration) (o xlog.Config) {
+// Vars
+var (
+	NopLogger = xlog.NopLogger
+)
+
+// Logger represents a logger
+type Logger interface {
+	Debug(v ...interface{})
+	Debugf(format string, v ...interface{})
+	Info(v ...interface{})
+	Infof(format string, v ...interface{})
+	Warn(v ...interface{})
+	Warnf(format string, v ...interface{})
+	Error(v ...interface{})
+	Errorf(format string, v ...interface{})
+	Fatal(v ...interface{})
+	Fatalf(format string, v ...interface{})
+}
+
+// NewXlogConfig creates a new xlog.Config
+func NewXlogConfig(c Configuration) (o xlog.Config) {
 	// Init
 	o = xlog.Config{
 		Fields: xlog.F{
@@ -20,7 +39,7 @@ func NewConfig(c Configuration) (o xlog.Config) {
 	return
 }
 
-// New creates a new xlog.Logger
-func New(c Configuration) xlog.Logger {
-	return xlog.New(NewConfig(c))
+// New creates a new Logger
+func New(c Configuration) Logger {
+	return xlog.New(NewXlogConfig(c))
 }
