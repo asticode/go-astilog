@@ -2,10 +2,10 @@ package astilog
 
 import "github.com/rs/xlog"
 
-// Vars
-var (
-	NopLogger = xlog.NopLogger
-)
+// NopLogger returns a nop logger
+func NopLogger() Logger {
+	return xlog.NopLogger
+}
 
 // Logger represents a logger
 type Logger interface {
