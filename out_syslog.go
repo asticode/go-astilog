@@ -13,7 +13,7 @@ import (
 
 // DefaultOutput is the default output
 func DefaultOut(c Configuration) (w io.Writer) {
-	if logrus.IsTerminal() {
+	if logrus.IsTerminal(w) {
 		return os.Stdout
 	}
 	var err error
