@@ -39,7 +39,7 @@ func New(c Configuration) Logger {
 	l.Out = DefaultOut(c)
 
 	// Formatter
-	if !logrus.IsTerminal() {
+	if !logrus.IsTerminal(l.Out) {
 		l.Formatter = &logrus.JSONFormatter{}
 	}
 
