@@ -1,8 +1,10 @@
 package astilog
 
 import (
-	"github.com/Sirupsen/logrus"
+	"os"
+
 	"github.com/rs/xlog"
+	"github.com/sirupsen/logrus"
 )
 
 // NopLogger returns a nop logger
@@ -39,7 +41,7 @@ func New(c Configuration) Logger {
 	l.Out = DefaultOut(c)
 
 	// Formatter
-	if !logrus.IsTerminal() {
+	if !logrus.IsTerminal(os.Stdout) {
 		l.Formatter = &logrus.JSONFormatter{}
 	}
 
