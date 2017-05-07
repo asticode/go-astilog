@@ -1,6 +1,9 @@
 package astilog
 
-import "github.com/rs/xlog"
+import (
+	"github.com/Sirupsen/logrus"
+	"github.com/rs/xlog"
+)
 
 // NopLogger returns a nop logger
 func NopLogger() Logger {
@@ -26,25 +29,23 @@ type LoggerSetter interface {
 	SetLogger(l Logger)
 }
 
-// NewXlogConfig creates a new xlog.Config
-func NewXlogConfig(c Configuration) (o xlog.Config) {
+// New creates a new Logger
+func New(c Configuration) Logger {
 	// Init
-	o = xlog.Config{
-		Fields: xlog.F{
-			"app_name": c.AppName,
-		},
-		Level:  xlog.LevelInfo,
-		Output: DefaultOutput(c),
+	var l = logrus.New()
+	l.WithField("app_name", c.AppName)
+	l.Formatter = &logrus.TextFormatter{ForceColors: true}
+	l.Level = logrus.InfoLevel
+	l.Out = DefaultOut(c)
+
+	// Formatter
+	if !logrus.IsTerminal() {
+		l.Formatter = &logrus.JSONFormatter{}
 	}
 
 	// Verbose
 	if c.Verbose {
-		o.Level = xlog.LevelDebug
+		l.Level = logrus.DebugLevel
 	}
-	return
-}
-
-// New creates a new Logger
-func New(c Configuration) Logger {
-	return xlog.New(NewXlogConfig(c))
+	return l
 }
