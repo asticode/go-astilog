@@ -7,13 +7,13 @@ import (
 	"log/syslog"
 	"os"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // DefaultOutput is the default output
 func DefaultOut(c Configuration) (w io.Writer) {
-	if logrus.IsTerminal(w) {
+	if logrus.IsTerminal(os.Stdout) {
 		return os.Stdout
 	}
 	var err error
