@@ -17,7 +17,7 @@ func DefaultOut(c Configuration) (w io.Writer) {
 		return os.Stdout
 	}
 	var err error
-	if w, err = syslog.New(syslog.LOG_LOCAL0, c.AppName); err != nil {
+	if w, err = syslog.New(syslog.LOG_INFO|syslog.LOG_USER, c.AppName); err != nil {
 		panic(errors.Wrap(err, "new syslog failed"))
 	}
 	return
