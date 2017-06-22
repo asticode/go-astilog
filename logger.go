@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/rs/xlog"
-	"github.com/sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 )
 
 // NopLogger returns a nop logger
