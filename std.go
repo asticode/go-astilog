@@ -3,6 +3,11 @@ package astilog
 // Global logger
 var gb = NopLogger()
 
+// FlagInit initializes the package based on flags
+func FlagInit() {
+	SetLogger(New(FlagConfig()))
+}
+
 // SetLogger sets the global logger
 func SetLogger(l Logger) {
 	gb = l
