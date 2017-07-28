@@ -8,12 +8,11 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 // DefaultOutput is the default output
 func DefaultOut(c Configuration) (w io.Writer) {
-	if logrus.IsTerminal(os.Stdout) {
+	if isTerminal(os.Stdout) {
 		return os.Stdout
 	}
 	var err error
