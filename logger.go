@@ -1,7 +1,10 @@
 package astilog
 
 import (
+	"io"
 	"os"
+
+	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/rs/xlog"
 	"github.com/sirupsen/logrus"
@@ -41,7 +44,7 @@ func New(c Configuration) Logger {
 	l.Out = DefaultOut(c)
 
 	// Formatter
-	if !logrus.IsTerminal(os.Stdout) {
+	if !isTerminal(os.Stdout) {
 		l.Formatter = &logrus.JSONFormatter{}
 	}
 
@@ -50,4 +53,13 @@ func New(c Configuration) Logger {
 		l.Level = logrus.DebugLevel
 	}
 	return l
+}
+
+func isTerminal(w io.Writer) bool {
+	switch v := w.(type) {
+	case *os.File:
+		return terminal.IsTerminal(int(v.Fd()))
+	default:
+		return false
+	}
 }
