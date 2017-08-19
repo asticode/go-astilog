@@ -13,6 +13,11 @@ func SetLogger(l Logger) {
 	gb = l
 }
 
+// GetLogger returns the global logger
+func GetLogger() Logger {
+	return gb
+}
+
 // Global logger shortcuts
 func Debug(v ...interface{})                 { gb.Debug(v...) }
 func Debugf(format string, v ...interface{}) { gb.Debugf(format, v...) }
