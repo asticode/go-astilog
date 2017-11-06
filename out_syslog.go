@@ -4,6 +4,7 @@ package astilog
 
 import (
 	"io"
+	"log"
 	"log/syslog"
 	"os"
 
@@ -17,7 +18,8 @@ func DefaultOut(c Configuration) (w io.Writer) {
 	}
 	var err error
 	if w, err = syslog.New(syslog.LOG_INFO|syslog.LOG_USER, c.AppName); err != nil {
-		panic(errors.Wrap(err, "new syslog failed"))
+		log.Println(errors.Wrap(err, "new syslog failed"))
+		return os.Stdout
 	}
 	return
 }
