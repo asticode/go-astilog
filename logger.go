@@ -4,16 +4,9 @@ import (
 	"io"
 	"os"
 
-	"golang.org/x/crypto/ssh/terminal"
-
-	"github.com/rs/xlog"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/ssh/terminal"
 )
-
-// NopLogger returns a nop logger
-func NopLogger() Logger {
-	return xlog.NopLogger
-}
 
 // Logger represents a logger
 type Logger interface {
