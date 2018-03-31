@@ -2,8 +2,10 @@ package astilog
 
 import (
 	"io"
+	"log"
 	"os"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -32,16 +34,30 @@ func New(c Configuration) Logger {
 	// Init
 	var l = logrus.New()
 	l.WithField("app_name", c.AppName)
-	l.Formatter = &logrus.TextFormatter{ForceColors: true}
-	l.Level = logrus.InfoLevel
-	l.Out = DefaultOut(c)
 
-	// Formatter
-	if !isTerminal(os.Stdout) {
-		l.Formatter = &logrus.JSONFormatter{}
+	// Out
+	l.Out = DefaultOut(c)
+	if len(c.Filename) > 0 {
+		f, err := os.OpenFile(c.Filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Println(errors.Wrapf(err, "creating %s failed", c.Filename))
+		} else {
+			l.Out = f
+		}
 	}
 
-	// Verbose
+	// Formatter
+	l.Formatter = &logrus.TextFormatter{ForceColors: true}
+	if !isTerminal(l.Out) {
+		if len(c.Filename) > 0 {
+			l.Formatter = &logrus.TextFormatter{DisableColors: true}
+		} else {
+			l.Formatter = &logrus.JSONFormatter{}
+		}
+	}
+
+	// Level
+	l.Level = logrus.InfoLevel
 	if c.Verbose {
 		l.Level = logrus.DebugLevel
 	}
