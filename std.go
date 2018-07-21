@@ -13,6 +13,11 @@ func SetLogger(l Logger) {
 	gb = l
 }
 
+// SetDefaultLogger sets the default logger
+func SetDefaultLogger() {
+	SetLogger(New(Configuration{Verbose: true}))
+}
+
 // GetLogger returns the global logger
 func GetLogger() Logger {
 	return gb
