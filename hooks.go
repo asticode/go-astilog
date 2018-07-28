@@ -2,19 +2,22 @@ package astilog
 
 import "github.com/sirupsen/logrus"
 
-type appNameHook struct {
-	appName string
+type withFieldHook struct {
+	k, v string
 }
 
-func newAppNameHook(appName string) *appNameHook {
-	return &appNameHook{appName: appName}
+func newWithFieldHook(k, v string) *withFieldHook {
+	return &withFieldHook{
+		k: k,
+		v: v,
+	}
 }
 
-func (h *appNameHook) Fire(e *logrus.Entry) error {
-	e.Data["app_name"] = h.appName
+func (h *withFieldHook) Fire(e *logrus.Entry) error {
+	e.Data[h.k] = h.v
 	return nil
 }
 
-func (h *appNameHook) Levels() []logrus.Level {
+func (h *withFieldHook) Levels() []logrus.Level {
 	return logrus.AllLevels
 }

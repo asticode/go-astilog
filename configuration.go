@@ -11,9 +11,10 @@ var (
 
 // Configuration represents the configuration of the logger
 type Configuration struct {
-	AppName  string `toml:"app_name"`
-	Filename string `toml:"filename"`
-	Verbose  bool   `toml:"verbose"`
+	AppName    string `toml:"app_name"`
+	Filename   string `toml:"filename"`
+	MessageKey string `toml:"message_key"`
+	Verbose    bool   `toml:"verbose"`
 }
 
 // FlagConfig generates a Configuration based on flags
