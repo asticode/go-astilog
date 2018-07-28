@@ -33,7 +33,9 @@ type LoggerSetter interface {
 func New(c Configuration) Logger {
 	// Init
 	var l = logrus.New()
-	l.WithField("app_name", c.AppName)
+
+	// Hooks
+	l.AddHook(newAppNameHook(c.AppName))
 
 	// Out
 	l.Out = DefaultOut(c)
