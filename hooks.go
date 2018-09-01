@@ -14,7 +14,9 @@ func newWithFieldHook(k, v string) *withFieldHook {
 }
 
 func (h *withFieldHook) Fire(e *logrus.Entry) error {
-	e.Data[h.k] = h.v
+	if len(h.v) > 0 {
+		e.Data[h.k] = h.v
+	}
 	return nil
 }
 
