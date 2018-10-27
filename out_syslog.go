@@ -11,14 +11,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DefaultOutput is the default output
-func DefaultOut(c Configuration) (w io.Writer) {
-	if isTerminal(os.Stdout) {
-		return os.Stdout
-	}
+
+func stdOut() io.Writer {
+	return os.Stdout
+}
+
+func syslogOut(c Configuration) (w io.Writer) {
 	var err error
 	if w, err = syslog.New(syslog.LOG_INFO|syslog.LOG_USER, c.AppName); err != nil {
-		log.Println(errors.Wrap(err, "new syslog failed"))
+		log.Println(errors.Wrap(err, "astilog: new syslog failed"))
 		return os.Stdout
 	}
 	return

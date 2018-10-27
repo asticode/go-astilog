@@ -4,11 +4,16 @@ package astilog
 
 import (
 	"io"
+	"log"
 
 	colorable "github.com/mattn/go-colorable"
 )
 
-// DefaultOut is the default out
-func DefaultOut(c Configuration) io.Writer {
+func stdOut() io.Writer {
 	return colorable.NewColorableStdout()
+}
+
+func syslogOut(c Configuration) io.Writer {
+	log.Println("astilog: syslog is not implemented on this os, using stdout instead")
+	return stdOut()
 }
