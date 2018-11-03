@@ -127,7 +127,10 @@ func Formatter(c Configuration, out string) logrus.Formatter {
 }
 
 func jsonFormatter(c Configuration) logrus.Formatter {
-	f := &logrus.JSONFormatter{FieldMap: make(logrus.FieldMap)}
+	f := &logrus.JSONFormatter{
+		FieldMap:        make(logrus.FieldMap),
+		TimestampFormat: c.TimestampFormat,
+	}
 	if len(c.MessageKey) > 0 {
 		f.FieldMap[logrus.FieldKeyMsg] = c.MessageKey
 	}
@@ -136,8 +139,10 @@ func jsonFormatter(c Configuration) logrus.Formatter {
 
 func textFormatter(c Configuration, out string) logrus.Formatter {
 	return &logrus.TextFormatter{
-		DisableColors: c.DisableColors || out == OutFile,
-		ForceColors:   !c.DisableColors && out != OutFile,
+		DisableColors:   c.DisableColors || out == OutFile,
+		ForceColors:     !c.DisableColors && out != OutFile,
+		FullTimestamp:   c.FullTimestamp,
+		TimestampFormat: c.TimestampFormat,
 	}
 }
 
