@@ -10,6 +10,7 @@ func NopLogger() Logger {
 // nop is a nop logger
 type nop struct{}
 
+func (n nop) Clone() Logger                          { return n }
 func (n nop) Debug(v ...interface{})                 {}
 func (n nop) Debugf(format string, v ...interface{}) {}
 func (n nop) Info(v ...interface{})                  {}
@@ -20,3 +21,5 @@ func (n nop) Error(v ...interface{})                 {}
 func (n nop) Errorf(format string, v ...interface{}) {}
 func (n nop) Fatal(v ...interface{})                 { os.Exit(1) }
 func (n nop) Fatalf(format string, v ...interface{}) { os.Exit(1) }
+func (n nop) WithField(k string, v interface{})      {}
+func (n nop) WithFields(fs Fields)                   {}

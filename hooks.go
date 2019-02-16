@@ -3,10 +3,11 @@ package astilog
 import "github.com/sirupsen/logrus"
 
 type withFieldHook struct {
-	k, v string
+	k string
+	v interface{}
 }
 
-func newWithFieldHook(k, v string) *withFieldHook {
+func newWithFieldHook(k string, v interface{}) *withFieldHook {
 	return &withFieldHook{
 		k: k,
 		v: v,
@@ -14,7 +15,7 @@ func newWithFieldHook(k, v string) *withFieldHook {
 }
 
 func (h *withFieldHook) Fire(e *logrus.Entry) error {
-	if len(h.v) > 0 {
+	if h.v != nil {
 		e.Data[h.k] = h.v
 	}
 	return nil

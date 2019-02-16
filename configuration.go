@@ -9,6 +9,19 @@ var (
 	Verbose  = flag.Bool("v", false, "if true, then log level is debug")
 )
 
+// Formats
+const (
+	FormatJSON = "json"
+	FormatText = "text"
+)
+
+// Outs
+const (
+	OutFile   = "file"
+	OutStdOut = "stdout"
+	OutSyslog = "syslog"
+)
+
 // Configuration represents the configuration of the logger
 type Configuration struct {
 	AppName         string `toml:"app_name"`

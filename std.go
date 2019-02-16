@@ -24,6 +24,7 @@ func GetLogger() Logger {
 }
 
 // Global logger shortcuts
+func Clone() Logger                          { return gb.Clone() }
 func Debug(v ...interface{})                 { gb.Debug(v...) }
 func Debugf(format string, v ...interface{}) { gb.Debugf(format, v...) }
 func Info(v ...interface{})                  { gb.Info(v...) }
@@ -34,3 +35,5 @@ func Error(v ...interface{})                 { gb.Error(v...) }
 func Errorf(format string, v ...interface{}) { gb.Errorf(format, v...) }
 func Fatal(v ...interface{})                 { gb.Fatal(v...) }
 func Fatalf(format string, v ...interface{}) { gb.Fatalf(format, v...) }
+func WithField(k, v string)                  { gb.WithField(k, v) }
+func WithFields(fs Fields)                   { gb.WithFields(fs) }
