@@ -15,14 +15,24 @@ var (
 // Writer represents an object capable of writing to the logger
 type Writer struct {
 	buffer *bytes.Buffer
-	fn     func(v ...interface{})
+	fs     []WriterFunc
+}
+
+// WriterFunc represents a writer func
+type WriterFunc func(text string)
+
+// LoggerFuncToWriterFunc converts a logger func to a writer func
+func LoggerFuncToWriterFunc(fn func(args ...interface{})) WriterFunc {
+	return func(text string) {
+		fn(text)
+	}
 }
 
 // NewWriter creates a new writer
-func NewWriter(fn func(v ...interface{})) *Writer {
+func NewWriter(fs ...WriterFunc) *Writer {
 	return &Writer{
 		buffer: &bytes.Buffer{},
-		fn:     fn,
+		fs:     fs,
 	}
 }
 
@@ -69,6 +79,8 @@ func (w *Writer) write(i []byte) {
 	// Sanitize text
 	text := string(bytes.TrimSpace(regexpColor.ReplaceAll(i, bytesEmpty)))
 
-	// Log
-	w.fn(text)
+	// Write
+	for _, fn := range w.fs {
+		fn(text)
+	}
 }
