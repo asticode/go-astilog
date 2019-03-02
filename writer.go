@@ -77,10 +77,15 @@ func (w *Writer) Write(i []byte) (n int, err error) {
 
 func (w *Writer) write(i []byte) {
 	// Sanitize text
-	text := string(bytes.TrimSpace(regexpColor.ReplaceAll(i, bytesEmpty)))
+	text := bytes.Trim(bytes.TrimSpace(regexpColor.ReplaceAll(i, bytesEmpty)), "\x00")
+
+	// Empty text
+	if len(text) == 0 {
+		return
+	}
 
 	// Write
 	for _, fn := range w.fs {
-		fn(text)
+		fn(string(text))
 	}
 }
