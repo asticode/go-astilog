@@ -38,6 +38,10 @@ func newLogrus(c Configuration) (l *Logrus) {
 
 	// Hooks
 	l.l.AddHook(l.fs)
+	l.l.AddHook(&sourceHook{})
+
+	// Default fields
+	l.WithFields(Fields{"app_name": c.AppName})
 	return
 }
 

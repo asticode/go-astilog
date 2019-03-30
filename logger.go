@@ -42,12 +42,7 @@ type LoggerSetter interface {
 
 // New creates a new Logger
 func New(c Configuration) Logger {
-	// Create logger
-	l := newLogrus(c)
-
-	// Default fields
-	l.WithFields(Fields{"app_name": c.AppName})
-	return l
+	return newLogrus(c)
 }
 
 func isTerminal(w io.Writer) bool {
