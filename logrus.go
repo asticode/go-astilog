@@ -5,23 +5,25 @@ import (
 	"log"
 	"os"
 
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
 // Logrus represents a logrus logger
 type Logrus struct {
-	c      Configuration
-	fields Fields
-	l      *logrus.Logger
+	c  Configuration
+	fs *fields
+	l  *logrus.Logger
 }
 
 func newLogrus(c Configuration) (l *Logrus) {
 	// Init
 	l = &Logrus{
-		c:      c,
-		fields: make(Fields),
-		l:      logrus.New(),
+		c:  c,
+		fs: newFields(),
+		l:  logrus.New(),
 	}
 
 	// Out
@@ -33,6 +35,9 @@ func newLogrus(c Configuration) (l *Logrus) {
 
 	// Level
 	l.l.Level = logrusLevel(c)
+
+	// Hooks
+	l.l.AddHook(l.fs)
 	return
 }
 
@@ -106,55 +111,73 @@ func logrusLevel(c Configuration) logrus.Level {
 	return logrus.InfoLevel
 }
 
-// Clone implements the Logger interface
-func (l *Logrus) Clone() Logger {
-	// Create logger
-	n := newLogrus(l.c)
-
-	// Copy fields
-	n.WithFields(l.fields)
-	return n
+func logrusFieldsFromContext(ctx context.Context) (fs logrus.Fields) {
+	if cfs := fieldsFromContext(ctx); cfs != nil {
+		return logrus.Fields(cfs)
+	}
+	return nil
 }
 
-// Debug implements the Logger interface
 func (l *Logrus) Debug(v ...interface{}) { l.l.Debug(v...) }
 
-// Debugf implements the Logger interface
+func (l *Logrus) DebugC(ctx context.Context, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Debug(v...)
+}
+
+func (l *Logrus) DebugCf(ctx context.Context, format string, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Debugf(format, v...)
+}
+
 func (l *Logrus) Debugf(format string, v ...interface{}) { l.l.Debugf(format, v...) }
 
-// WithField implements the Logger interface
 func (l *Logrus) Info(v ...interface{}) { l.l.Info(v...) }
 
-// WithField implements the Logger interface
+func (l *Logrus) InfoC(ctx context.Context, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Info(v...)
+}
+
+func (l *Logrus) InfoCf(ctx context.Context, format string, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Infof(format, v...)
+}
+
 func (l *Logrus) Infof(format string, v ...interface{}) { l.l.Infof(format, v...) }
 
-// WithField implements the Logger interface
 func (l *Logrus) Warn(v ...interface{}) { l.l.Warn(v...) }
 
-// WithField implements the Logger interface
+func (l *Logrus) WarnC(ctx context.Context, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Warn(v...)
+}
+
+func (l *Logrus) WarnCf(ctx context.Context, format string, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Warnf(format, v...)
+}
+
 func (l *Logrus) Warnf(format string, v ...interface{}) { l.l.Warnf(format, v...) }
 
-// WithField implements the Logger interface
 func (l *Logrus) Error(v ...interface{}) { l.l.Error(v...) }
 
-// WithField implements the Logger interface
+func (l *Logrus) ErrorC(ctx context.Context, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Error(v...)
+}
+
+func (l *Logrus) ErrorCf(ctx context.Context, format string, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Errorf(format, v...)
+}
+
 func (l *Logrus) Errorf(format string, v ...interface{}) { l.l.Errorf(format, v...) }
 
-// WithField implements the Logger interface
 func (l *Logrus) Fatal(v ...interface{}) { l.l.Fatal(v...) }
 
-// WithField implements the Logger interface
+func (l *Logrus) FatalC(ctx context.Context, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Fatal(v...)
+}
+
+func (l *Logrus) FatalCf(ctx context.Context, format string, v ...interface{}) {
+	l.l.WithFields(logrusFieldsFromContext(ctx)).Fatalf(format, v...)
+}
+
 func (l *Logrus) Fatalf(format string, v ...interface{}) { l.l.Fatalf(format, v...) }
 
-// WithField implements the Logger interface
-func (l *Logrus) WithField(k string, v interface{}) {
-	l.fields[k] = v
-	l.l.AddHook(newWithFieldHook(k, v))
-}
+func (l *Logrus) WithField(k string, v interface{}) { l.fs.set(k, v) }
 
-// WithFields implements the Logger interface
-func (l *Logrus) WithFields(fs Fields) {
-	for k, v := range fs {
-		l.WithField(k, v)
-	}
-}
+func (l *Logrus) WithFields(fs Fields) { l.fs.setMultiple(fs) }
