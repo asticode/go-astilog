@@ -52,7 +52,7 @@ func logrusOut(c Configuration) (w io.Writer, out string) {
 	case OutSyslog:
 		return syslogOut(c), c.Out
 	default:
-		if isTerminal(os.Stdout) {
+		if isInteractive() {
 			w = stdOut()
 			out = OutStdOut
 		} else {

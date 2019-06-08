@@ -1,7 +1,6 @@
 package astilog
 
 import (
-	"io"
 	"os"
 
 	"context"
@@ -45,11 +44,6 @@ func New(c Configuration) Logger {
 	return newLogrus(c)
 }
 
-func isTerminal(w io.Writer) bool {
-	switch v := w.(type) {
-	case *os.File:
-		return terminal.IsTerminal(int(v.Fd()))
-	default:
-		return false
-	}
+func isInteractive() bool {
+	return terminal.IsTerminal(int(os.Stdin.Fd()))
 }
