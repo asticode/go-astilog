@@ -185,3 +185,9 @@ func (l *Logrus) Fatalf(format string, v ...interface{}) { l.l.Fatalf(format, v.
 func (l *Logrus) WithField(k string, v interface{}) { l.fs.set(k, v) }
 
 func (l *Logrus) WithFields(fs Fields) { l.fs.setMultiple(fs) }
+
+func (l *Logrus) Write(b []byte) (n int, err error) {
+	l.l.Debug(string(b))
+	n = len(b)
+	return
+}

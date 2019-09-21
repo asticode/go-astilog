@@ -1,6 +1,10 @@
 package astilog
 
-import "context"
+import (
+	"context"
+	"log"
+	"io"
+)
 
 // Global logger
 var gb = NopLogger()
@@ -13,6 +17,10 @@ func FlagInit() {
 // SetLogger sets the global logger
 func SetLogger(l Logger) {
 	gb = l
+	if w, ok := l.(io.Writer); ok {
+		log.SetFlags(0)
+		log.SetOutput(w)
+	}
 }
 
 // SetDefaultLogger sets the default logger
