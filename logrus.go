@@ -41,7 +41,9 @@ func newLogrus(c Configuration) (l *Logrus) {
 	l.l.AddHook(&sourceHook{})
 
 	// Default fields
-	l.WithFields(Fields{"app_name": c.AppName})
+	if c.AppName != "" {
+		l.WithFields(Fields{"app_name": c.AppName})
+	}
 	return
 }
 
@@ -101,10 +103,11 @@ func logrusJSONFormatter(c Configuration) logrus.Formatter {
 
 func logrusTextFormatter(c Configuration, out string) logrus.Formatter {
 	return &logrus.TextFormatter{
-		DisableColors:   c.DisableColors || out == OutFile,
-		ForceColors:     !c.DisableColors && out != OutFile,
-		FullTimestamp:   c.FullTimestamp,
-		TimestampFormat: c.TimestampFormat,
+		DisableColors:    c.DisableColors || out == OutFile,
+		DisableTimestamp: c.DisableTimestamp,
+		ForceColors:      !c.DisableColors && out != OutFile,
+		FullTimestamp:    c.FullTimestamp,
+		TimestampFormat:  c.TimestampFormat,
 	}
 }
 
