@@ -6,7 +6,7 @@ import "flag"
 var (
 	AppName  = flag.String("logger-app-name", "", "the logger's app name")
 	Filename = flag.String("logger-filename", "", "the logger's filename")
-	Verbose  = flag.Bool("v", false, "if true, then log level is debug")
+	Verbose  = flag.Bool("logger-verbose", false, "if true, then log level is debug")
 )
 
 // Formats
@@ -34,6 +34,11 @@ type Configuration struct {
 	Out              string `toml:"out"`
 	TimestampFormat  string `toml:"timestamp_format"`
 	Verbose          bool   `toml:"verbose"`
+}
+
+// SetHandyFlags sets handy flags
+func SetHandyFlags() {
+	Verbose = flag.Bool("v", false, "if true, then log level is debug")
 }
 
 // FlagConfig generates a Configuration based on flags
