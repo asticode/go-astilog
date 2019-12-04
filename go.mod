@@ -1,11 +1,10 @@
 module github.com/asticode/go-astilog
 
-require (
-	github.com/mattn/go-colorable v0.0.9
-	github.com/mattn/go-isatty v0.0.4 // indirect
-	github.com/pkg/errors v0.8.0
-	github.com/sirupsen/logrus v1.2.0
-	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9
-)
-
 go 1.13
+
+require (
+	github.com/mattn/go-colorable v0.1.4
+	github.com/pkg/errors v0.8.1
+	github.com/sirupsen/logrus v1.4.2
+	golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e
+)
