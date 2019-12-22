@@ -9,7 +9,7 @@ import (
 var (
 	bytesEmpty  = []byte("")
 	bytesEOL    = []byte("\n")
-	regexpColor = regexp.MustCompile("\\[[\\d]+m")
+	regexpColor = regexp.MustCompile(`\[[\d]+m`)
 )
 
 // Writer represents an object capable of writing to the logger
@@ -52,7 +52,7 @@ func (w *Writer) Write(i []byte) (n int, err error) {
 	}()
 
 	// No EOL in the log, write in buffer
-	if bytes.Index(i, bytesEOL) == -1 {
+	if !bytes.Contains(i, bytesEOL) {
 		w.buffer.Write(i)
 		return
 	}
