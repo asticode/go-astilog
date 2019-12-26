@@ -2,8 +2,8 @@ package astilog
 
 import (
 	"context"
-	"log"
 	"io"
+	"log"
 )
 
 // Global logger
@@ -34,6 +34,8 @@ func GetLogger() Logger {
 }
 
 // Global logger shortcuts
+func Print(v ...interface{})                                       { gb.Print(v...) }
+func Printf(format string, v ...interface{})                       { gb.Printf(format, v...) }
 func Debug(v ...interface{})                                       { gb.Debug(v...) }
 func DebugC(ctx context.Context, v ...interface{})                 { gb.DebugC(ctx, v...) }
 func DebugCf(ctx context.Context, format string, v ...interface{}) { gb.DebugCf(ctx, format, v...) }

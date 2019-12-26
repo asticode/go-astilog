@@ -1,11 +1,10 @@
 package astilog
 
 import (
+	"context"
 	"io"
 	"log"
 	"os"
-
-	"context"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -124,6 +123,10 @@ func logrusFieldsFromContext(ctx context.Context) (fs logrus.Fields) {
 	}
 	return nil
 }
+
+func (l *Logrus) Print(v ...interface{}) { l.l.Print(v...) }
+
+func (l *Logrus) Printf(format string, v ...interface{}) { l.l.Printf(format, v...) }
 
 func (l *Logrus) Debug(v ...interface{}) { l.l.Debug(v...) }
 

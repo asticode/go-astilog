@@ -13,6 +13,8 @@ func NopLogger() Logger {
 // nop is a nop logger
 type nop struct{}
 
+func (n nop) Print(v ...interface{})                                       {}
+func (n nop) Printf(format string, v ...interface{})                       {}
 func (n nop) Debug(v ...interface{})                                       {}
 func (n nop) DebugC(ctx context.Context, v ...interface{})                 {}
 func (n nop) DebugCf(ctx context.Context, format string, v ...interface{}) {}

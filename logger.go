@@ -1,15 +1,16 @@
 package astilog
 
 import (
-	"os"
-
 	"context"
+	"os"
 
 	"golang.org/x/crypto/ssh/terminal"
 )
 
 // Logger represents a logger
 type Logger interface {
+	Print(v ...interface{})
+	Printf(format string, v ...interface{})
 	Debug(v ...interface{})
 	DebugC(ctx context.Context, v ...interface{})
 	DebugCf(ctx context.Context, format string, v ...interface{})
