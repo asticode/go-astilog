@@ -61,6 +61,15 @@ l.DebugC(ctx, "this is a log message")
 l.InfoCf(ctx, "this is a %s message", "log")
 ```
 
+## Add fields
+
+```go
+l.WithFields(map[string]interface{}{
+    "k1": "v1",
+    "k2": "v2",
+})
+```
+
 ## Outputs
 ### Log to file
 
@@ -77,3 +86,29 @@ Set the `Out` option to `stderr` or `astilog.OutStderr` if you're setting it in 
 ### Log to stdout
 
 Set the `Out` option to `stdout` or `astilog.OutStdout` if you're setting it in GO.
+
+## Formats
+### Text
+
+Set the `Format` option to `text` or `astilog.FormatText`.
+
+### JSON
+
+Set the `Format` option to `json` or `astilog.FormatJSON`.
+
+## Extra options
+### App name
+
+Set the `AppName` option with your app name to see it in the logs.
+
+### Message key
+
+Set the `MessageKey` option with your key to update the `json` key for the message field. Default is `msg`.
+
+### Source
+
+Set the `Source` option to `true` to see the `file:line` that called the log function.
+
+### Timestamp format
+
+Set the `TimestampFormat` option with your time format. If left empty, the duration since the beginning of the run will be logged.
