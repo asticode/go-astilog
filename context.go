@@ -4,25 +4,25 @@ import "context"
 
 const contextKeyFields = "astilog.fields"
 
-func fieldsFromContext(ctx context.Context) Fields {
-	v, ok := ctx.Value(contextKeyFields).(Fields)
+func fieldsFromContext(ctx context.Context) map[string]interface{} {
+	v, ok := ctx.Value(contextKeyFields).(map[string]interface{})
 	if !ok {
 		return nil
 	}
 	return v
 }
 
-func ContextWithField(parent context.Context, k string, v interface{}) context.Context {
-	return ContextWithFields(parent, Fields{k: v})
+func ContextWithField(ctx context.Context, k string, v interface{}) context.Context {
+	return ContextWithFields(ctx, map[string]interface{}{k: v})
 }
 
-func ContextWithFields(parent context.Context, fs Fields) context.Context {
-	cfs := fieldsFromContext(parent)
+func ContextWithFields(ctx context.Context, fs map[string]interface{}) context.Context {
+	cfs := fieldsFromContext(ctx)
 	if cfs == nil {
-		cfs = make(Fields)
+		cfs = make(map[string]interface{})
 	}
 	for k, v := range fs {
 		cfs[k] = v
 	}
-	return context.WithValue(parent, contextKeyFields, cfs)
+	return context.WithValue(ctx, contextKeyFields, cfs)
 }
