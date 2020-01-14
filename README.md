@@ -1,6 +1,11 @@
-`astilog` goal is to provide an implementation of [astikit.CompleteLogger](https://github.com/asticode/go-astikit/blob/master/logger.go#L8) interface while restricting dependencies to [astikit](https://github.com/asticode/go-astikit) only.
+[![GoReportCard](http://goreportcard.com/badge/github.com/asticode/go-astilog)](http://goreportcard.com/report/github.com/asticode/go-astilog)
+[![GoDoc](https://godoc.org/github.com/asticode/go-astilog?status.svg)](https://godoc.org/github.com/asticode/go-astilog)
+[![Travis](https://travis-ci.org/asticode/go-astilog.svg?branch=master)](https://travis-ci.org/asticode/go-astilog#)
+[![Coveralls](https://coveralls.io/repos/github/asticode/go-astilog/badge.svg?branch=master)](https://coveralls.io/github/asticode/go-astilog)
 
-It doesn't provide a global logger anymore since it should be a project-based decision and libs need an instance of `astikit.CompleteLogger` provided to them anyway.
+`astilog` goal is to provide an implementation of [astilog.CompleteLogger](https://github.com/asticode/go-astilog/blob/master/logger.go#L8) interface while restricting dependencies to [astilog](https://github.com/asticode/go-astilog) only.
+
+It doesn't provide a global logger anymore since it should be a project-based decision and libs need an instance of `astilog.CompleteLogger` provided to them anyway.
 
 It doesn't use `logrus` anymore since most of its features were not used. As a result `astilog` is now much simpler and quicker since it only implements a subset of `logrus` features.
 
