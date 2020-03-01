@@ -1,11 +1,26 @@
 package astilog
 
-import "context"
+import (
+	"context"
+	"sync"
+)
 
 const contextKeyFields = "astilog.fields"
 
-func fieldsFromContext(ctx context.Context) map[string]interface{} {
-	v, ok := ctx.Value(contextKeyFields).(map[string]interface{})
+type contextFields struct {
+	fs map[string]interface{}
+	m  *sync.Mutex
+}
+
+func newContextFields() *contextFields {
+	return &contextFields{
+		fs: make(map[string]interface{}),
+		m:  &sync.Mutex{},
+	}
+}
+
+func fieldsFromContext(ctx context.Context) *contextFields {
+	v, ok := ctx.Value(contextKeyFields).(*contextFields)
 	if !ok {
 		return nil
 	}
@@ -19,10 +34,12 @@ func ContextWithField(ctx context.Context, k string, v interface{}) context.Cont
 func ContextWithFields(ctx context.Context, fs map[string]interface{}) context.Context {
 	cfs := fieldsFromContext(ctx)
 	if cfs == nil {
-		cfs = make(map[string]interface{})
+		cfs = newContextFields()
 	}
+	cfs.m.Lock()
 	for k, v := range fs {
-		cfs[k] = v
+		cfs.fs[k] = v
 	}
+	cfs.m.Unlock()
 	return context.WithValue(ctx, contextKeyFields, cfs)
 }

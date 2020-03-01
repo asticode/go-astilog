@@ -176,8 +176,12 @@ func (l *Logger) write(ctx context.Context, msgFunc func() string, level int) {
 	}
 
 	// Add context fields
-	for k, v := range fieldsFromContext(ctx) {
-		fs[k] = v
+	if cfs := fieldsFromContext(ctx); cfs != nil {
+		cfs.m.Lock()
+		for k, v := range cfs.fs {
+			fs[k] = v
+		}
+		cfs.m.Unlock()
 	}
 
 	// Write
