@@ -17,8 +17,9 @@ var (
 
 // Formats
 const (
-	FormatJSON = "json"
-	FormatText = "text"
+	FormatJSON       = "json"
+	FormatMinimalist = "minimalist"
+	FormatText       = "text"
 )
 
 // Levels

@@ -70,3 +70,13 @@ func TestJSONFormatter(t *testing.T) {
 		t.Errorf("expected %s, got %s", e, g)
 	}
 }
+
+func TestMinimalistFormatter(t *testing.T) {
+	f := newMinimalistFormatter()
+	if e, g := []byte("msg\n"), f.format("msg", levelDebug, map[string]interface{}{
+		"k1": "v1",
+		"k2": "v2",
+	}); !bytes.Equal(e, g) {
+		t.Errorf("expected %s, got %s", e, g)
+	}
+}

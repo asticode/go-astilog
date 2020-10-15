@@ -132,6 +132,8 @@ func (l *Logger) setFormatter(c Configuration, createdAt time.Time) {
 	switch c.Format {
 	case FormatJSON:
 		l.f = newJSONFormatter(c, createdAt)
+	case FormatMinimalist:
+		l.f = newMinimalistFormatter()
 	default:
 		l.f = newTextFormatter(c, createdAt)
 	}

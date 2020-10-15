@@ -128,3 +128,13 @@ func (f *jsonFormatter) format(msg string, level int, fs map[string]interface{})
 	b = append(b, []byte("\n")...)
 	return b
 }
+
+type minimalistFormatter struct{}
+
+func newMinimalistFormatter() *minimalistFormatter {
+	return &minimalistFormatter{}
+}
+
+func (f *minimalistFormatter) format(msg string, level int, fs map[string]interface{}) []byte {
+	return append([]byte(msg), []byte("\n")...)
+}
