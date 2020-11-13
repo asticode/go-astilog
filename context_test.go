@@ -12,7 +12,7 @@ func TestContext(t *testing.T) {
 		"k2": "v2",
 	}
 	ctx := ContextWithFields(context.Background(), fs)
-	if g := fieldsFromContext(ctx); !reflect.DeepEqual(fs, g.fs) {
-		t.Errorf("expected %+v, got %+v", fs, g.fs)
+	if g := FieldsFromContext(ctx); !reflect.DeepEqual(fs, g) {
+		t.Errorf("expected %+v, got %+v", fs, g)
 	}
 }

@@ -27,6 +27,19 @@ func fieldsFromContext(ctx context.Context) *contextFields {
 	return v
 }
 
+func FieldsFromContext(ctx context.Context) (fs map[string]interface{}) {
+	if cfs := fieldsFromContext(ctx); cfs != nil {
+		cfs.m.Lock()
+		fs = make(map[string]interface{})
+		for k, v := range cfs.fs {
+			fs[k] = v
+		}
+		cfs.m.Unlock()
+		return
+	}
+	return
+}
+
 func ContextWithField(ctx context.Context, k string, v interface{}) context.Context {
 	return ContextWithFields(ctx, map[string]interface{}{k: v})
 }
