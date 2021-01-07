@@ -45,14 +45,16 @@ func ContextWithField(ctx context.Context, k string, v interface{}) context.Cont
 }
 
 func ContextWithFields(ctx context.Context, fs map[string]interface{}) context.Context {
-	cfs := fieldsFromContext(ctx)
-	if cfs == nil {
-		cfs = newContextFields()
+	cfs := newContextFields()
+	if ccfs := fieldsFromContext(ctx); ccfs != nil {
+		ccfs.m.Lock()
+		for k, v := range ccfs.fs {
+			cfs.fs[k] = v
+		}
+		ccfs.m.Unlock()
 	}
-	cfs.m.Lock()
 	for k, v := range fs {
 		cfs.fs[k] = v
 	}
-	cfs.m.Unlock()
 	return context.WithValue(ctx, contextKeyFields, cfs)
 }
