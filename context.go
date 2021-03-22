@@ -5,7 +5,9 @@ import (
 	"sync"
 )
 
-const contextKeyFields = "astilog.fields"
+type contextKey string
+
+const contextKeyFields contextKey = "astilog.fields"
 
 type contextFields struct {
 	fs map[string]interface{}
@@ -20,6 +22,9 @@ func newContextFields() *contextFields {
 }
 
 func fieldsFromContext(ctx context.Context) *contextFields {
+	if ctx == nil {
+		return nil
+	}
 	v, ok := ctx.Value(contextKeyFields).(*contextFields)
 	if !ok {
 		return nil
