@@ -50,6 +50,9 @@ func ContextWithField(ctx context.Context, k string, v interface{}) context.Cont
 }
 
 func ContextWithFields(ctx context.Context, fs map[string]interface{}) context.Context {
+	if ctx == nil {
+		return nil
+	}
 	cfs := newContextFields()
 	if ccfs := fieldsFromContext(ctx); ccfs != nil {
 		ccfs.m.Lock()
