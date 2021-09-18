@@ -154,6 +154,7 @@ func TestWrite(t *testing.T) {
 	}
 
 	// Context
+	b.Reset()
 	l.fs = map[string]interface{}{"k1": "v1"}
 	l.write(ContextWithField(context.Background(), "k2", "v2"), msgFunc("test"), levelInfo)
 	if e, g := " INFO[0000]test  k1=v1 k2=v2\n", b.String(); e != g {
@@ -165,7 +166,16 @@ func TestWrite(t *testing.T) {
 	l.c.Source = true
 	l.fs = map[string]interface{}{}
 	l.write(context.Background(), msgFunc("test"), levelInfo)
-	if e, g := " INFO[0000]test  source=logger_test.go:167\n", b.String(); e != g {
+	if e, g := " INFO[0000]test  source=logger_test.go:168\n", b.String(); e != g {
+		t.Errorf("expected %s, got %s", e, g)
+	}
+
+	// Max write length
+	b.Reset()
+	l.c.MaxWriteLength = 3
+	l.c.Source = false
+	l.write(context.Background(), msgFunc("testtesttest"), levelInfo)
+	if e, g := " IN\nFO[\n000\n0]t\nest\ntes\ntte\nst\n", b.String(); e != g {
 		t.Errorf("expected %s, got %s", e, g)
 	}
 }

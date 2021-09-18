@@ -8,6 +8,7 @@ var (
 	Filename        = flag.String("logger-filename", "", "the logger filename")
 	Format          = flag.String("logger-format", "", "the logger format")
 	Level           = flag.String("logger-level", "", "the logger level")
+	MaxWriteLength  = flag.Int("logger-max-write-length", 0, "the logger max write length")
 	MessageKey      = flag.String("logger-message-key", "", "the logger message key")
 	Out             = flag.String("logger-out", "", "the logger out")
 	Source          = flag.Bool("logger-source", false, "if true, then source is added to fields")
@@ -44,6 +45,7 @@ type Configuration struct {
 	Filename        string `toml:"filename"`
 	Format          string `toml:"format"`
 	Level           string `toml:"level"`
+	MaxWriteLength  int    `toml:"max_write_length"`
 	MessageKey      string `toml:"message_key"`
 	Out             string `toml:"out"`
 	Source          bool   `toml:"source"`
@@ -57,6 +59,7 @@ func FlagConfig() (c Configuration) {
 		Filename:        *Filename,
 		Format:          *Format,
 		Level:           *Level,
+		MaxWriteLength:  *MaxWriteLength,
 		MessageKey:      *MessageKey,
 		Out:             *Out,
 		Source:          *Source,

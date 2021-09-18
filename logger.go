@@ -1,6 +1,7 @@
 package astilog
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -15,6 +16,8 @@ import (
 
 	"github.com/asticode/go-astikit"
 )
+
+var newLine = []byte("\n")
 
 // Levels
 const (
@@ -186,10 +189,54 @@ func (l *Logger) write(ctx context.Context, msgFunc func() string, level int) {
 		cfs.m.Unlock()
 	}
 
+	// Format message
+	m := l.f.format(msgFunc(), level, fs)
+
 	// Write
-	if _, err := l.w.Write(l.f.format(msgFunc(), level, fs)); err != nil {
-		log.Println(fmt.Errorf("astilog: writing failed: %w", err))
-		return
+	if l.c.MaxWriteLength > 0 {
+		// Loop
+		var c int
+		for {
+			// Get boundaries
+			from := c * l.c.MaxWriteLength
+			to := (c + 1) * l.c.MaxWriteLength
+
+			// We're done
+			if from > len(m)-1 {
+				break
+			}
+
+			// We've reached the end of the message
+			if to > len(m) {
+				to = len(m)
+			}
+
+			// Since append modifies the input slice, we need to create a new one when
+			// appending a new line
+			wm := m[from:to]
+			if to != len(m) {
+				wm = make([]byte, to-from)
+				copy(wm, m[from:to])
+				if !bytes.HasSuffix(wm, newLine) {
+					wm = append(wm, newLine...)
+				}
+			}
+
+			// Write
+			if _, err := l.w.Write(wm); err != nil {
+				log.Println(fmt.Errorf("astilog: writing failed: %w", err))
+				return
+			}
+
+			// Increment
+			c++
+		}
+	} else {
+		// Write
+		if _, err := l.w.Write(m); err != nil {
+			log.Println(fmt.Errorf("astilog: writing failed: %w", err))
+			return
+		}
 	}
 }
 

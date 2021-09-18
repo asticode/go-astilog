@@ -70,7 +70,7 @@ func (f *textFormatter) format(msg string, level int, fs map[string]interface{})
 	}
 
 	// Add newline
-	b = append(b, []byte("\n")...)
+	b = append(b, newLine...)
 	return
 }
 
@@ -125,7 +125,7 @@ func (f *jsonFormatter) format(msg string, level int, fs map[string]interface{})
 	}
 
 	// Add newline
-	b = append(b, []byte("\n")...)
+	b = append(b, newLine...)
 	return b
 }
 
@@ -136,5 +136,5 @@ func newMinimalistFormatter() *minimalistFormatter {
 }
 
 func (f *minimalistFormatter) format(msg string, level int, fs map[string]interface{}) []byte {
-	return append([]byte(msg), []byte("\n")...)
+	return append([]byte(msg), newLine...)
 }
