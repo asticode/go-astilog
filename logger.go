@@ -193,7 +193,7 @@ func (l *Logger) write(ctx context.Context, msgFunc func() string, level int) {
 	m := l.f.format(msgFunc(), level, fs)
 
 	// Write
-	if l.c.MaxWriteLength > 0 {
+	if l.c.MaxWriteLength > 0 && len(m) > l.c.MaxWriteLength {
 		// Loop
 		var c int
 		for {
