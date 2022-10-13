@@ -19,23 +19,14 @@ import (
 
 var newLine = []byte("\n")
 
-// Levels
-const (
-	levelDebug = iota
-	levelInfo
-	levelWarn
-	levelError
-	levelFatal
-)
-
 // Logger represents an object that can log stuff
 type Logger struct {
 	c         Configuration
 	createdAt time.Time
 	f         formatter
 	fs        map[string]interface{}
-	mf        *sync.RWMutex // Locks fs
-	l         int           // Level
+	mf        *sync.RWMutex       // Locks fs
+	l         astikit.LoggerLevel // Level
 	w         io.WriteCloser
 }
 
@@ -117,18 +108,7 @@ func (l *Logger) setWriter(c Configuration) {
 }
 
 func (l *Logger) setLevel(c Configuration) {
-	switch c.Level {
-	case LevelDebug:
-		l.l = levelDebug
-	case LevelWarn:
-		l.l = levelWarn
-	case LevelError:
-		l.l = levelError
-	case LevelFatal:
-		l.l = levelFatal
-	default:
-		l.l = levelInfo
-	}
+	l.l = c.Level
 }
 
 func (l *Logger) setFormatter(c Configuration, createdAt time.Time) {
@@ -161,9 +141,9 @@ func source() string {
 	return file + ":" + strconv.Itoa(line)
 }
 
-func (l *Logger) write(ctx context.Context, msgFunc func() string, level int) {
+func (l *Logger) write(ctx context.Context, msgFunc func() string, lvl astikit.LoggerLevel) {
 	// Check level
-	if l.l > level {
+	if l.l > lvl {
 		return
 	}
 
@@ -190,7 +170,7 @@ func (l *Logger) write(ctx context.Context, msgFunc func() string, level int) {
 	}
 
 	// Format message
-	m := l.f.format(msgFunc(), level, fs)
+	m := l.f.format(msgFunc(), lvl, fs)
 
 	// Write
 	if l.c.MaxWriteLength > 0 && len(m) > l.c.MaxWriteLength {
@@ -257,89 +237,105 @@ func (l *Logger) Printf(format string, v ...interface{}) {
 }
 
 func (l *Logger) Debug(v ...interface{}) {
-	l.write(context.Background(), msgFunc(v...), levelDebug)
+	l.write(context.Background(), msgFunc(v...), astikit.LoggerLevelDebug)
 }
 
 func (l *Logger) DebugC(ctx context.Context, v ...interface{}) {
-	l.write(ctx, msgFunc(v...), levelDebug)
+	l.write(ctx, msgFunc(v...), astikit.LoggerLevelDebug)
 }
 
 func (l *Logger) DebugCf(ctx context.Context, format string, v ...interface{}) {
-	l.write(ctx, msgFuncf(format, v...), levelDebug)
+	l.write(ctx, msgFuncf(format, v...), astikit.LoggerLevelDebug)
 }
 
 func (l *Logger) Debugf(format string, v ...interface{}) {
-	l.write(context.Background(), msgFuncf(format, v...), levelDebug)
+	l.write(context.Background(), msgFuncf(format, v...), astikit.LoggerLevelDebug)
 }
 
 func (l *Logger) Info(v ...interface{}) {
-	l.write(context.Background(), msgFunc(v...), levelInfo)
+	l.write(context.Background(), msgFunc(v...), astikit.LoggerLevelInfo)
 }
 
 func (l *Logger) InfoC(ctx context.Context, v ...interface{}) {
-	l.write(ctx, msgFunc(v...), levelInfo)
+	l.write(ctx, msgFunc(v...), astikit.LoggerLevelInfo)
 }
 
 func (l *Logger) InfoCf(ctx context.Context, format string, v ...interface{}) {
-	l.write(ctx, msgFuncf(format, v...), levelInfo)
+	l.write(ctx, msgFuncf(format, v...), astikit.LoggerLevelInfo)
 }
 
 func (l *Logger) Infof(format string, v ...interface{}) {
-	l.write(context.Background(), msgFuncf(format, v...), levelInfo)
+	l.write(context.Background(), msgFuncf(format, v...), astikit.LoggerLevelInfo)
 }
 
 func (l *Logger) Warn(v ...interface{}) {
-	l.write(context.Background(), msgFunc(v...), levelWarn)
+	l.write(context.Background(), msgFunc(v...), astikit.LoggerLevelWarn)
 }
 
 func (l *Logger) WarnC(ctx context.Context, v ...interface{}) {
-	l.write(ctx, msgFunc(v...), levelWarn)
+	l.write(ctx, msgFunc(v...), astikit.LoggerLevelWarn)
 }
 
 func (l *Logger) WarnCf(ctx context.Context, format string, v ...interface{}) {
-	l.write(ctx, msgFuncf(format, v...), levelWarn)
+	l.write(ctx, msgFuncf(format, v...), astikit.LoggerLevelWarn)
 }
 
 func (l *Logger) Warnf(format string, v ...interface{}) {
-	l.write(context.Background(), msgFuncf(format, v...), levelWarn)
+	l.write(context.Background(), msgFuncf(format, v...), astikit.LoggerLevelWarn)
 }
 
 func (l *Logger) Error(v ...interface{}) {
-	l.write(context.Background(), msgFunc(v...), levelError)
+	l.write(context.Background(), msgFunc(v...), astikit.LoggerLevelError)
 }
 
 func (l *Logger) ErrorC(ctx context.Context, v ...interface{}) {
-	l.write(ctx, msgFunc(v...), levelError)
+	l.write(ctx, msgFunc(v...), astikit.LoggerLevelError)
 }
 
 func (l *Logger) ErrorCf(ctx context.Context, format string, v ...interface{}) {
-	l.write(ctx, msgFuncf(format, v...), levelError)
+	l.write(ctx, msgFuncf(format, v...), astikit.LoggerLevelError)
 }
 
 func (l *Logger) Errorf(format string, v ...interface{}) {
-	l.write(context.Background(), msgFuncf(format, v...), levelError)
+	l.write(context.Background(), msgFuncf(format, v...), astikit.LoggerLevelError)
 }
 
 var exit = func() { os.Exit(1) }
 
 func (l *Logger) Fatal(v ...interface{}) {
-	l.write(context.Background(), msgFunc(v...), levelFatal)
+	l.write(context.Background(), msgFunc(v...), astikit.LoggerLevelFatal)
 	exit()
 }
 
 func (l *Logger) FatalC(ctx context.Context, v ...interface{}) {
-	l.write(ctx, msgFunc(v...), levelFatal)
+	l.write(ctx, msgFunc(v...), astikit.LoggerLevelFatal)
 	exit()
 }
 
 func (l *Logger) FatalCf(ctx context.Context, format string, v ...interface{}) {
-	l.write(ctx, msgFuncf(format, v...), levelFatal)
+	l.write(ctx, msgFuncf(format, v...), astikit.LoggerLevelFatal)
 	exit()
 }
 
 func (l *Logger) Fatalf(format string, v ...interface{}) {
-	l.write(context.Background(), msgFuncf(format, v...), levelFatal)
+	l.write(context.Background(), msgFuncf(format, v...), astikit.LoggerLevelFatal)
 	exit()
+}
+
+func (l *Logger) Write(lv astikit.LoggerLevel, v ...interface{}) {
+	l.write(context.Background(), msgFunc(v...), lv)
+}
+
+func (l *Logger) WriteC(ctx context.Context, lv astikit.LoggerLevel, v ...interface{}) {
+	l.write(ctx, msgFunc(v...), lv)
+}
+
+func (l *Logger) WriteCf(ctx context.Context, lv astikit.LoggerLevel, format string, v ...interface{}) {
+	l.write(ctx, msgFuncf(format, v...), lv)
+}
+
+func (l *Logger) Writef(lv astikit.LoggerLevel, format string, v ...interface{}) {
+	l.write(context.Background(), msgFuncf(format, v...), lv)
 }
 
 // WithField adds a field to the logger

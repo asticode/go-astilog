@@ -1,11 +1,15 @@
 package astilog
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/asticode/go-astikit"
+)
 
 func TestConfiguration(t *testing.T) {
-	*Level = LevelInfo
+	*Level = "info"
 	*Verbose = true
-	if e, g := LevelDebug, FlagConfig().Level; e != g {
+	if e, g := astikit.LoggerLevelDebug, FlagConfig().Level; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
 }

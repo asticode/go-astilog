@@ -52,7 +52,7 @@ func TestSetWriter(t *testing.T) {
 	default:
 		t.Errorf("expected *os.File, got %T", tp)
 	}
-	l.w.Write([]byte("test"))
+	l.w.Write([]byte("test")) //nolint: errcheck
 	b, err := ioutil.ReadFile(f)
 	if err != nil {
 		t.Fatal(fmt.Errorf("reading %s failed: %w", f, err))
@@ -96,24 +96,24 @@ func TestSetWriter(t *testing.T) {
 func TestSetLevel(t *testing.T) {
 	l := NewFromFlags()
 	defer l.Close()
-	l.setLevel(Configuration{Level: LevelDebug})
-	if e, g := levelDebug, l.l; e != g {
+	l.setLevel(Configuration{Level: astikit.LoggerLevelDebug})
+	if e, g := astikit.LoggerLevelDebug, l.l; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
-	l.setLevel(Configuration{Level: LevelInfo})
-	if e, g := levelInfo, l.l; e != g {
+	l.setLevel(Configuration{Level: astikit.LoggerLevelInfo})
+	if e, g := astikit.LoggerLevelInfo, l.l; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
-	l.setLevel(Configuration{Level: LevelWarn})
-	if e, g := levelWarn, l.l; e != g {
+	l.setLevel(Configuration{Level: astikit.LoggerLevelWarn})
+	if e, g := astikit.LoggerLevelWarn, l.l; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
-	l.setLevel(Configuration{Level: LevelError})
-	if e, g := levelError, l.l; e != g {
+	l.setLevel(Configuration{Level: astikit.LoggerLevelError})
+	if e, g := astikit.LoggerLevelError, l.l; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
-	l.setLevel(Configuration{Level: LevelFatal})
-	if e, g := levelFatal, l.l; e != g {
+	l.setLevel(Configuration{Level: astikit.LoggerLevelFatal})
+	if e, g := astikit.LoggerLevelFatal, l.l; e != g {
 		t.Errorf("expected %+v, got %+v", e, g)
 	}
 }
@@ -147,8 +147,8 @@ func TestWrite(t *testing.T) {
 	l.w = astikit.NopCloser(b)
 
 	// Level is not sufficient
-	l.l = levelInfo
-	l.write(context.Background(), msgFunc("test"), levelDebug)
+	l.l = astikit.LoggerLevelInfo
+	l.write(context.Background(), msgFunc("test"), astikit.LoggerLevelDebug)
 	if e, g := "", b.String(); e != g {
 		t.Errorf("expected %s, got %s", e, g)
 	}
@@ -156,7 +156,7 @@ func TestWrite(t *testing.T) {
 	// Context
 	b.Reset()
 	l.fs = map[string]interface{}{"k1": "v1"}
-	l.write(ContextWithField(context.Background(), "k2", "v2"), msgFunc("test"), levelInfo)
+	l.write(ContextWithField(context.Background(), "k2", "v2"), msgFunc("test"), astikit.LoggerLevelInfo)
 	if e, g := " INFO[0000]test  k1=v1 k2=v2\n", b.String(); e != g {
 		t.Errorf("expected %s, got %s", e, g)
 	}
@@ -165,7 +165,7 @@ func TestWrite(t *testing.T) {
 	b.Reset()
 	l.c.Source = true
 	l.fs = map[string]interface{}{}
-	l.write(context.Background(), msgFunc("test"), levelInfo)
+	l.write(context.Background(), msgFunc("test"), astikit.LoggerLevelInfo)
 	if e, g := " INFO[0000]test  source=logger_test.go:168\n", b.String(); e != g {
 		t.Errorf("expected %s, got %s", e, g)
 	}
@@ -174,7 +174,7 @@ func TestWrite(t *testing.T) {
 	b.Reset()
 	l.c.MaxWriteLength = 3
 	l.c.Source = false
-	l.write(context.Background(), msgFunc("testtesttest"), levelInfo)
+	l.write(context.Background(), msgFunc("testtesttest"), astikit.LoggerLevelInfo)
 	if e, g := " IN\nFO[\n000\n0]t\nest\ntes\ntte\nst\n", b.String(); e != g {
 		t.Errorf("expected %s, got %s", e, g)
 	}
@@ -188,7 +188,7 @@ func TestLogger(t *testing.T) {
 	defer func() { exit = old }()
 
 	// Setup
-	l := New(Configuration{Level: LevelDebug})
+	l := New(Configuration{Level: astikit.LoggerLevelDebug})
 	defer l.Close()
 	b := &bytes.Buffer{}
 	l.w = astikit.NopCloser(b)

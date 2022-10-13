@@ -13,7 +13,7 @@ import (
 )
 
 type formatter interface {
-	format(msg string, level int, fs map[string]interface{}) []byte
+	format(msg string, l astikit.LoggerLevel, fs map[string]interface{}) []byte
 }
 
 type textFormatter struct {
@@ -28,16 +28,16 @@ func newTextFormatter(c Configuration, createdAt time.Time) *textFormatter {
 	}
 }
 
-func (f *textFormatter) format(msg string, level int, fs map[string]interface{}) (b []byte) {
+func (f *textFormatter) format(msg string, l astikit.LoggerLevel, fs map[string]interface{}) (b []byte) {
 	// Add level
-	switch level {
-	case levelDebug:
+	switch l {
+	case astikit.LoggerLevelDebug:
 		b = append(b, []byte("DEBUG")...)
-	case levelWarn:
+	case astikit.LoggerLevelWarn:
 		b = append(b, []byte(" WARN")...)
-	case levelError:
+	case astikit.LoggerLevelError:
 		b = append(b, []byte("ERROR")...)
-	case levelFatal:
+	case astikit.LoggerLevelFatal:
 		b = append(b, []byte("FATAL")...)
 	default:
 		b = append(b, []byte(" INFO")...)
@@ -92,23 +92,12 @@ func newJSONFormatter(c Configuration, createdAt time.Time) (f *jsonFormatter) {
 	return
 }
 
-func (f *jsonFormatter) format(msg string, level int, fs map[string]interface{}) []byte {
+func (f *jsonFormatter) format(msg string, l astikit.LoggerLevel, fs map[string]interface{}) []byte {
 	// Add msg
 	fs[f.msgKey] = msg
 
 	// Add level
-	switch level {
-	case levelDebug:
-		fs["level"] = LevelDebug
-	case levelError:
-		fs["level"] = LevelError
-	case levelFatal:
-		fs["level"] = LevelFatal
-	case levelWarn:
-		fs["level"] = LevelWarn
-	default:
-		fs["level"] = LevelInfo
-	}
+	fs["level"] = l
 
 	// Add timestamp
 	if f.c.TimestampFormat == "" {
@@ -135,6 +124,6 @@ func newMinimalistFormatter() *minimalistFormatter {
 	return &minimalistFormatter{}
 }
 
-func (f *minimalistFormatter) format(msg string, level int, fs map[string]interface{}) []byte {
+func (f *minimalistFormatter) format(msg string, l astikit.LoggerLevel, fs map[string]interface{}) []byte {
 	return append([]byte(msg), newLine...)
 }

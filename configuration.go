@@ -1,6 +1,10 @@
 package astilog
 
-import "flag"
+import (
+	"flag"
+
+	"github.com/asticode/go-astikit"
+)
 
 // Flags
 var (
@@ -23,15 +27,6 @@ const (
 	FormatText       = "text"
 )
 
-// Levels
-const (
-	LevelDebug = "debug"
-	LevelError = "error"
-	LevelFatal = "fatal"
-	LevelInfo  = "info"
-	LevelWarn  = "warn"
-)
-
 // Outs
 const (
 	OutStderr = "stderr"
@@ -41,15 +36,15 @@ const (
 
 // Configuration represents the configuration of the logger
 type Configuration struct {
-	AppName         string `toml:"app_name"`
-	Filename        string `toml:"filename"`
-	Format          string `toml:"format"`
-	Level           string `toml:"level"`
-	MaxWriteLength  int    `toml:"max_write_length"`
-	MessageKey      string `toml:"message_key"`
-	Out             string `toml:"out"`
-	Source          bool   `toml:"source"`
-	TimestampFormat string `toml:"timestamp_format"`
+	AppName         string              `toml:"app_name"`
+	Filename        string              `toml:"filename"`
+	Format          string              `toml:"format"`
+	Level           astikit.LoggerLevel `toml:"level"`
+	MaxWriteLength  int                 `toml:"max_write_length"`
+	MessageKey      string              `toml:"message_key"`
+	Out             string              `toml:"out"`
+	Source          bool                `toml:"source"`
+	TimestampFormat string              `toml:"timestamp_format"`
 }
 
 // FlagConfig generates a Configuration based on flags
@@ -58,7 +53,7 @@ func FlagConfig() (c Configuration) {
 		AppName:         *AppName,
 		Filename:        *Filename,
 		Format:          *Format,
-		Level:           *Level,
+		Level:           astikit.LoggerLevelFromString(*Level),
 		MaxWriteLength:  *MaxWriteLength,
 		MessageKey:      *MessageKey,
 		Out:             *Out,
@@ -66,7 +61,7 @@ func FlagConfig() (c Configuration) {
 		TimestampFormat: *TimestampFormat,
 	}
 	if *Verbose {
-		c.Level = LevelDebug
+		c.Level = astikit.LoggerLevelDebug
 	}
 	return
 }
