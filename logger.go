@@ -126,7 +126,7 @@ func source() string {
 	// Skip self callers
 	i := 0
 	_, file, line, ok := runtime.Caller(i)
-	for ok && strings.Contains(file, "asticode/go-astilog/logger.go") {
+	for ok && strings.Contains(file, "/go-astilog/logger.go") {
 		i++
 		_, file, line, ok = runtime.Caller(i)
 	}

@@ -1,6 +1,6 @@
 [![GoReportCard](http://goreportcard.com/badge/github.com/asticode/go-astilog)](http://goreportcard.com/report/github.com/asticode/go-astilog)
 [![GoDoc](https://godoc.org/github.com/asticode/go-astilog?status.svg)](https://godoc.org/github.com/asticode/go-astilog)
-[![Travis](https://travis-ci.org/asticode/go-astilog.svg?branch=master)](https://travis-ci.org/asticode/go-astilog#)
+[![Test](https://github.com/asticode/go-astilog/actions/workflows/test.yml/badge.svg)](https://github.com/asticode/go-astilog/actions/workflows/test.yml)
 [![Coveralls](https://coveralls.io/repos/github/asticode/go-astilog/badge.svg?branch=master)](https://coveralls.io/github/asticode/go-astilog)
 
 `astilog` goal is to provide an implementation of [astilog.CompleteLogger](https://github.com/asticode/go-astilog/blob/master/logger.go#L8) interface while restricting dependencies to [astilog](https://github.com/asticode/go-astilog) only.
